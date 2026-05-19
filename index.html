@@ -1,0 +1,1314 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Management Visit</title>
+
+<style>
+
+.pdf-header{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    margin-bottom:15px;
+}
+
+.pdf-logo{
+    width:50px;
+    height:50px;
+    object-fit:contain;
+    margin-bottom:10px;
+}
+
+#pdfHeader{
+    display:none;
+}
+
+.pdf-title{
+    text-align:center;
+    color:#1565c0;
+    font-weight:bold;
+    line-height:1.5;
+}
+
+.pdf-title div:first-child{
+    font-size:16px;
+}
+
+.pdf-title div:last-child{
+    font-size:16px;
+}
+
+.summary-box{
+    display:flex;
+    flex-wrap:wrap;
+    gap:20px;
+    align-items:center;
+    font-weight:bold;
+    color:#1565c0;
+}
+
+.right{
+    text-align:right;
+}
+
+.pdf-icon{
+    font-size:22px;
+    cursor:pointer;
+}
+
+.button-group{
+    display:flex;
+    gap:10px;
+}    
+
+.dashboard-rat-grid{
+    display:grid;
+    grid-template-columns:
+        repeat(7, 1fr);
+    gap:6px;
+    width:100%;
+    height:100%;
+}
+
+.rat-chart-box{
+    position:relative;
+    height:100%;
+    min-height:260px;
+    background:white;
+    border:1px solid #d0d0d0;
+    border-radius:8px;
+    padding:6px;
+    overflow:hidden;
+}
+
+.rat-chart-box canvas{
+    width:100% !important;
+    height:100% !important;
+}
+
+ .download-btn{
+    position:absolute;
+    top:10px;
+    right:60px;
+    z-index:1000;
+    background:#1565c0;
+    color:white;
+    border:none;
+    padding:8px 14px;
+    border-radius:5px;
+    cursor:pointer;
+    font-weight:bold;
+}   
+
+.modal{
+    display:none;
+    position:fixed;
+    z-index:999;
+    left:0;
+    top:0;
+    width:100%;
+    height:100%;
+    background:rgba(0,0,0,0.7);
+}
+
+.modal-content{
+    position:relative;
+    width:90%;
+    height:90%;
+    margin:2% auto;
+    background:white;
+    border-radius:10px;
+    overflow:hidden;
+}
+
+.close{
+    position:absolute;
+    right:15px;
+    top:10px;
+    font-size:30px;
+    cursor:pointer;
+    z-index:1000;
+    color:red;
+    font-weight:bold;
+}
+
+#pdfFrame{
+    width:100%;
+    height:100%;
+    border:none;
+}    
+
+.table-container{
+    padding:15px;
+    overflow-x:auto;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+th{
+    background:#1565c0;
+    color:white;
+    padding:12px;
+    text-align:left;
+}
+
+td{
+    padding:8px 10px;
+}
+
+tbody tr{
+    transition:0.2s;
+}
+
+/* baris ganjil */
+tbody tr:nth-child(odd){
+    background:white;
+}
+
+/* baris genap */
+tbody tr:nth-child(even){
+    background:#eaf3ff;
+}
+
+/* hover */
+tbody tr:hover{
+    background:#d6e9ff;
+}
+
+th{
+    background:#1565c0;
+    color:white;
+    padding:10px;
+    text-align:left;
+    white-space:nowrap;
+}
+
+.lampiran-cell{
+    white-space:nowrap;
+}
+
+.pdf-icon{
+    cursor:pointer;
+    font-size:22px;
+}
+
+*{
+    box-sizing:border-box;
+}
+
+body{
+    margin:0;
+    font-family:Arial, sans-serif;
+    background:#f0f2f5;
+}
+
+.header{
+    background:#1565c0;
+    color:white;
+    padding:15px;
+    font-size:24px;
+    font-weight:bold;
+    text-align:center;
+}
+
+.toolbar{
+    background:white;
+    padding:10px;
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+    align-items:center;
+    justify-content:center;
+    box-shadow:0 2px 5px rgba(0,0,0,0.15);
+}
+
+button{
+    background:#1976d2;
+    color:white;
+    border:none;
+    padding:10px 15px;
+    border-radius:6px;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+button:hover{
+    background:#0d47a1;
+}
+
+.container{
+    padding:15px;
+}
+
+iframe{
+    width:100%;
+    height:500px;
+    border:none;
+    margin-top:10px;
+    border-radius:8px;
+}
+
+.loading{
+    text-align:center;
+    padding:20px;
+    font-size:18px;
+}
+
+.center{
+    text-align:center;
+}
+
+.dashboard-content{
+    position:relative;
+    width:99vw;
+    height:92vh;
+    margin:1vh auto;
+    background:white;
+    border-radius:10px;
+    padding:8px;
+    overflow:hidden;
+}
+
+#barChart{
+    height:78% !important;
+}
+
+.dashboard-grid{
+    display:grid;
+    grid-template-columns:60% 40%;
+    gap:8px;
+    width:100%;
+    height:calc(100% - 40px);
+}
+
+.chart-box{
+    position:relative;
+    width:100%;
+    height:100%;
+    overflow:hidden;
+}
+
+.chart-box canvas{
+    max-height:100% !important;
+}
+
+.pie-container{
+    display:grid;
+    grid-template-rows:40% auto 40%;
+    gap:5px;
+    height:100%;
+    align-items:center;
+}
+
+#pieOmzet,
+#pieEbitda{
+    max-height:300px !important;
+}
+
+.legend-box{
+    text-align:center;
+    font-size:11px;
+    font-weight:bold;
+    color:#444;
+}
+
+canvas{
+    width:100% !important;
+    height:100% !important;
+}
+
+.download-dashboard-btn{
+    position:absolute;
+    top:10px;
+    right:70px;
+    z-index:1000;
+    background:#2e7d32;
+    color:white;
+    border:none;
+    padding:10px 16px;
+    border-radius:6px;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+.unit-dashboard-content{
+    position:relative;
+    width:92vw;
+    height:84vh;
+    margin:2vh auto;
+    background:white;
+    border-radius:10px;
+    padding:15px;
+    overflow:hidden;
+}
+
+.unit-dashboard-grid{
+    display:grid;
+    grid-template-columns:55% 45%;
+    gap:10px;
+    width:100%;
+    height:100%;
+}
+
+.icon-slot{
+    display:inline-block;
+    width:28px;
+    text-align:center;
+}
+
+</style>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
+<script>
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+</head>
+
+<body>
+
+<div class="header">
+    RAPAT ANGGOTA TAHUNAN
+</div>
+
+<div class="toolbar">
+    <button onclick="openDashboard()">
+        DASHBOARD
+    </button>
+    <label>
+        <input type="checkbox"
+               value="all"
+               checked
+               onchange="toggleGrafik(this)">
+        Kinerja
+    </label>
+    <label>
+        <input type="checkbox"
+               value="anggota"
+               onchange="toggleGrafik(this)">
+        Anggota
+    </label>
+    <label>
+        <input type="checkbox"
+               value="aset"
+               onchange="toggleGrafik(this)">
+        Asset
+    </label>
+    <label>
+        <input type="checkbox"
+               value="omzet"
+               onchange="toggleGrafik(this)">
+        Omzet
+    </label>
+    <label>
+        <input type="checkbox"
+               value="ebitda"
+               onchange="toggleGrafik(this)">
+        EBITDA
+    </label>
+    <label>
+        <input type="checkbox"
+               value="shu"
+               onchange="toggleGrafik(this)">
+        SHU
+    </label>
+    <label>
+        <input type="checkbox"
+               value="capital"
+               onchange="toggleGrafik(this)">
+        Modal
+    </label>
+    <label>
+        <input type="checkbox"
+               value="neraca"
+               onchange="toggleGrafik(this)">
+        Neraca
+    </label>
+</div>
+
+<div class="container">
+    <div id="loading" class="loading">
+        Loading data...
+    </div>
+<div class="table-container">
+
+<table>
+
+<thead>
+<tr>
+    <th class="center">
+        Tahun Buku
+    </th>
+    <th class="center">
+        Tanggal RAT
+    </th>
+    <th class="center">
+        Jumlah Anggota
+    </th>
+    <th class="center">
+        Nilai Asset
+    </th>
+    <th class="center">
+        Total Omzet
+    </th>
+    <th class="center">
+        Pencapaian Ebitda
+    </th>
+    <th class="center">
+        Perolehan SHU
+    </th>
+    <th class="center">
+        Modal Akhir
+    </th>
+    <th class="center">
+        Nilai Neraca
+    </th>
+    <th>
+        Buku RAT
+    </th>
+</tr>
+</thead>
+
+<tbody id="listData"></tbody>
+
+</table>
+
+</div>
+</div>
+
+<script>
+
+const API_URL =
+"https://script.google.com/macros/s/AKfycbwmxT9NtECTXvkYfnM3tTDxCp63SzHyvA7OmsBHtAoALi1LCIJ5bh5ZEjse5GpDwESP/exec";
+let allData = [];
+let filteredData = [];
+
+
+function openForm(url){
+    window.open(url, "_blank");
+}
+
+async function loadData(){
+    try{
+        const response =
+            await fetch(API_URL);
+        allData =
+            await response.json();
+        document.getElementById("loading")
+            .style.display = "none";
+        // isi combo tahun
+        tampilData();
+    }
+    catch(err){
+        document.getElementById("loading")
+            .innerHTML =
+            "Gagal load data";
+        console.log(err);
+    }
+}
+
+
+let ratCharts = [];
+
+function openDashboard(){
+    document.getElementById(
+        "dashboardModal"
+    ).style.display = "block";
+    buatGrafikRAT();
+}
+
+function closeDashboard(){
+    document.getElementById(
+        "dashboardModal"
+    ).style.display = "none";
+}
+
+function toggleGrafik(cb){
+    if(cb.value=="all" && cb.checked){
+        document
+        .querySelectorAll(
+            '.toolbar input[type=checkbox]'
+        )
+        .forEach(x=>{
+            x.checked = false;
+        });
+        cb.checked = true;
+    }else{
+        document.querySelector(
+            'input[value=all]'
+        ).checked = false;
+    }
+}
+
+function buatGrafikRAT(){
+    // destroy chart lama
+    ratCharts.forEach(x=>x.destroy());
+    ratCharts = [];
+    const container =
+        document.getElementById(
+            "dashboardCharts"
+        );
+    container.innerHTML = "";
+    const checks =
+        document.querySelectorAll(
+            '.toolbar input[type=checkbox]:checked'
+        );
+    let fields = [];
+    checks.forEach(c=>{
+        if(c.value=="all"){
+            fields = [
+                {
+                    field:"anggota",
+                    title:"JUMLAH ANGGOTA"
+                },
+                {
+                    field:"aset",
+                    title:"NILAI ASSET"
+                },
+                {
+                    field:"omzet",
+                    title:"TOTAL OMZET"
+                },
+                {
+                    field:"ebitda",
+                    title:"PEROLEHAN EBITDA"
+                },
+                {
+                    field:"shu",
+                    title:"PEROLEHAN SHU"
+                },
+                {
+                    field:"capital",
+                    title:"MODAL AKHIR"
+                },
+                {
+                    field:"neraca",
+                    title:"NILAI NERACA"
+                }
+            ];
+        }else{
+            let title = "";
+            switch(c.value){
+                case "anggota":
+                    title = "JUMLAH ANGGOTA";
+                    break;
+                case "aset":
+                    title = "NILAI ASSET";
+                    break;
+                case "omzet":
+                    title = "TOTAL OMZET";
+                    break;
+                case "ebitda":
+                    title = "PEROLEHAN EBITDA";
+                    break;
+                case "shu":
+                    title = "PEROLEHAN SHU";
+                    break;
+                case "capital":
+                    title = "MODAL AKHIR";
+                    break;
+                case "neraca":
+                    title = "NILAI NERACA";
+                    break;
+            }
+            fields.push({
+                field:c.value,
+                title:title
+            });
+        }
+    });
+
+    fields.forEach(item=>{
+        buatChartItem(
+            container,
+            item.field,
+            item.title
+        );
+    });
+}
+
+function buatChartItem(
+    container,
+    field,
+    title
+){
+    let warna = "#1565c0";
+    switch(field){
+    case "anggota":
+        warna = "#5e35b1";
+        break;
+    case "aset":
+        warna = "#00897b";
+        break;
+    case "omzet":
+        warna = "#1e88e5";
+        break;
+    case "ebitda":
+        warna = "#43a047";
+        break;
+    case "shu":
+        warna = "#fb8c00";
+        break;
+    case "capital":
+        warna = "#e53935";
+        break;
+    case "neraca":
+        warna = "#6d4c41";
+        break;
+    }
+    // sorting terbaru kiri
+    const dataSort =
+        [...allData].sort(
+            (a,b)=>
+            parseInt(b.tahun) -
+            parseInt(a.tahun)
+        );
+    const labels =
+        dataSort.map(x=>x.tahun);
+    const values =
+        dataSort.map(x=>
+            toMoney(x[field])
+        );
+
+    // box
+    const box =
+        document.createElement("div");
+    box.className =
+        "rat-chart-box";
+
+    // canvas
+    const canvas =
+        document.createElement("canvas");
+    box.appendChild(canvas);
+    container.appendChild(box);
+
+    // chart
+    const chart =
+        new Chart(canvas, {
+        type:"bar",
+        data:{
+            labels:labels,
+            datasets:[{
+                label:title,
+                data:values,
+                backgroundColor:warna,
+                borderColor:warna,
+                data:values,
+                barPercentage:0.70,
+            }]
+        },
+
+        options:{
+            responsive:true,
+            maintainAspectRatio:false,
+            layout:{
+                padding:{
+                    top:18,
+                    bottom:5,
+                    left:2,
+                    right:2
+                }
+            },
+            plugins:{
+                legend:{
+                    display:false
+                },
+                title:{
+                    display:true,
+                    text:title,
+                    color:"#1565c0",
+                    padding:{
+                        top:15,
+                        bottom:100
+                    },
+                    font:{
+                        size:16,
+                        weight:"bold"
+                    }
+                },
+
+                datalabels:{
+                    anchor:"end",
+                    align:"top",
+                    rotation:-90,
+                    color:"#000",
+                    font:{
+                        size:10
+                    },
+
+                    formatter:function(value){
+
+                        return value
+                        .toLocaleString(
+                            "id-ID",
+                            {
+                                minimumFractionDigits:0,
+                                maximumFractionDigits:0
+                            }
+                        );
+                    }
+                }
+            },
+            scales:{
+                x:{
+                    ticks:{
+                        font:{
+                            size:11
+                        }
+                    }
+                },
+
+                y:{
+                    beginAtZero:true,
+                    ticks:{
+                        maxTicksLimit:10,
+                        font:{
+                            size:8
+                        },
+                        callback:function(value){               
+                            return value
+                            .toLocaleString(
+                                "id-ID"
+                            );
+                        }
+                    }
+                }
+            }
+        },
+        plugins:[ChartDataLabels]
+    });
+    ratCharts.push(chart);
+}
+
+function tambahDataset(
+    datasets,
+    label,
+    field
+){
+    datasets.push({
+        label:label,
+        data:
+            allData.map(x=>
+                parseFloat(
+                    x[field]
+                    .toString()
+                    .replace(/\./g,"")
+                    .replace(",",".")
+                ) || 0
+            )
+    });
+}
+
+async function downloadDashboardRATPDF(){
+    const { jsPDF } = window.jspdf;
+    const dashboard =
+        document.querySelector(
+            ".dashboard-content"
+        );
+    const btn =
+        dashboard.querySelector(
+            ".download-dashboard-btn"
+        );
+    const closeBtn =
+        dashboard.querySelector(
+            ".close"
+        );
+    const header =
+        document.getElementById(
+            "pdfHeader"
+        );
+    // sembunyikan tombol
+    btn.style.display = "none";
+    closeBtn.style.display = "none";
+
+    // tampilkan header pdf
+    header.style.display = "flex";
+
+    // ubah height auto supaya semua isi masuk
+    const oldHeight =
+        dashboard.style.height;
+    dashboard.style.height = "auto";
+
+    // tunggu render
+    await new Promise(r =>
+        setTimeout(r, 500)
+    );
+
+    // capture full dashboard
+    const canvas =
+        await html2canvas(
+            dashboard,
+            {
+                scale:2,
+                useCORS:true,
+                backgroundColor:"#ffffff",
+                windowWidth:
+                    dashboard.scrollWidth,
+                windowHeight:
+                    dashboard.scrollHeight
+            }
+        );
+    const imgData =
+        canvas.toDataURL(
+            "image/png"
+        );
+
+    // buat pdf landscape
+    const pdf =
+        new jsPDF({
+            orientation:"landscape",
+            unit:"mm",
+            format:"a4"
+        });
+
+    // ukuran halaman
+    const pageWidth =
+        pdf.internal.pageSize.getWidth();
+    const pageHeight =
+        pdf.internal.pageSize.getHeight();
+
+    // margin
+    const margin = 5;
+    const availableWidth =
+        pageWidth - (margin * 2);
+    const availableHeight =
+        pageHeight - (margin * 2);
+
+    // scaling proporsional
+    const ratio =
+        Math.min(
+            availableWidth / canvas.width,
+            availableHeight / canvas.height
+        );
+    const finalWidth =
+        canvas.width * ratio;
+    const finalHeight =
+        canvas.height * ratio;
+
+    // posisi center
+    const x =
+        (pageWidth - finalWidth) / 2;
+    const y =
+        (pageHeight - finalHeight) / 2;
+
+    // gambar
+    pdf.addImage(
+        imgData,
+        "PNG",
+        x,
+        y,
+        finalWidth,
+        finalHeight
+    );
+
+    // save
+    pdf.save(
+        "Dashboard_RAT.pdf"
+    );
+
+    // restore
+    dashboard.style.height =
+        oldHeight;
+    header.style.display = "none";
+    btn.style.display = "block";
+    closeBtn.style.display = "block";
+}
+
+
+async function downloadDashboardPDF(){
+    const { jsPDF } = window.jspdf;
+    const dashboard =
+        document.querySelector(".dashboard-content");
+    const btn =
+        dashboard.querySelector(
+        ".download-dashboard-btn"
+        );
+        btn.style.display = "none";
+    const closeBtn =
+        dashboard.querySelector(
+            ".close"
+        );
+        closeBtn.style.display = "none";
+    // capture dashboard
+    dashboard.style.height = "auto";
+    const canvas =
+        await html2canvas(dashboard, {
+            scale:2,
+            useCORS:true,
+            backgroundColor:"#ffffff",
+            windowWidth: dashboard.scrollWidth,
+            windowHeight: dashboard.scrollHeight
+        });
+    const imgData =
+        canvas.toDataURL("image/png");
+    // ukuran canvas
+    const imgWidth = canvas.width;
+    const imgHeight = canvas.height;
+    // buat PDF landscape
+    const pdf =
+        new jsPDF({
+            orientation:"landscape",
+            unit:"mm",
+            format:"a4"
+        });
+    // ukuran halaman pdf
+    const pageWidth =
+        pdf.internal.pageSize.getWidth();
+    const pageHeight =
+        pdf.internal.pageSize.getHeight();
+    // margin
+    const margin = 5;
+    // area tersedia
+    const availableWidth =
+        pageWidth - (margin * 2);
+    const availableHeight =
+        pageHeight - (margin * 2);
+    // hitung rasio
+    const ratio =
+        Math.min(
+            availableWidth / imgWidth,
+            availableHeight / imgHeight
+        );
+    // ukuran final
+    const finalWidth =
+        imgWidth * ratio;
+    const finalHeight =
+        imgHeight * ratio;
+    // posisi center
+    const x =
+        (pageWidth - finalWidth) / 2;
+    const y =
+        (pageHeight - finalHeight) / 2;
+    // masukkan gambar
+    pdf.addImage(
+        imgData,
+        "PNG",
+        x,
+        y,
+        finalWidth,
+        finalHeight
+    );
+    // download
+    pdf.save("Dashboard_Tilik.pdf");
+    dashboard.style.height = "96vh";
+    btn.style.display = "block";
+    closeBtn.style.display = "block";
+}
+
+
+function showPDF(fileId){
+    const previewLink =
+        "https://drive.google.com/file/d/" +
+        fileId +
+        "/preview";
+    document.getElementById(
+        "pdfModal"
+    ).style.display = "block";
+    document.getElementById(
+        "pdfFrame"
+    ).src = previewLink;
+}
+
+function closePDF(){
+    document.getElementById("pdfModal")
+        .style.display = "none";
+    document.getElementById("pdfFrame")
+        .src = "";
+}
+
+
+function tampilData(){
+    const list =
+        document.getElementById("listData");
+    list.innerHTML = "";
+    // urut tahun terbaru
+    allData.sort((a,b)=>
+        parseInt(b.tahun) -
+        parseInt(a.tahun)
+    );
+    allData.forEach(x=>{
+        const tr =
+            document.createElement("tr");
+        tr.innerHTML = `
+        <td align="center">
+            ${x.tahun || ""}
+        </td>
+        <td align="center">
+            ${formatTanggal(x.tanggal)}
+        </td>
+        <td align="center">
+            ${formatAngka(x.anggota)}
+        </td>
+        <td align="right">
+            ${formatAngka(x.aset)}
+        </td>
+        <td align="right">
+            ${formatAngka(x.omzet)}
+        </td>
+        <td align="right">
+            ${formatAngka(x.ebitda)}
+        </td>
+        <td align="right">
+            ${formatAngka(x.shu)}
+        </td>
+        <td align="right">
+            ${formatAngka(x.capital)}
+        </td>
+        <td align="right">
+            ${formatAngka(x.neraca)}
+        </td>
+        <td align="center">
+            <span class="pdf-icon"
+                onclick="showPDF('${x.fileId}')">
+                📄
+            </span>
+        </td>
+        `;
+        list.appendChild(tr);
+    });
+}
+
+function formatHasil(nilai){
+    if(nilai == null || nilai == "")
+        return "0,00";
+    return parseFloat(nilai)
+        .toLocaleString(
+            "id-ID",
+            {
+                minimumFractionDigits:2,
+                maximumFractionDigits:2
+            }
+        );
+}
+
+function formatTanggal(tgl){
+    if(!tgl) return "";
+    tgl = tgl.toString();
+    // pastikan 8 digit
+    if(tgl.length != 8) return tgl;
+    const tahun = tgl.substring(0,4);
+    const bulan = tgl.substring(4,6);
+    const hari = tgl.substring(6,8);
+    return hari + "-" + bulan + "-" + tahun;
+}
+
+function toNumber(nilai){
+    if(!nilai)
+        return 0;
+    // ubah ke string
+    nilai = nilai.toString();
+    // hapus titik ribuan
+    nilai = nilai.replace(/\./g, "");
+    // ganti koma jadi titik
+    nilai = nilai.replace(",", ".");
+    // convert number
+    return parseFloat(nilai) || 0;
+}
+
+function toDecimal(nilai){
+    if(!nilai)
+        return 0;
+    nilai = nilai.toString().trim();
+    // hanya ganti koma ke titik
+    nilai = nilai.replace(",", ".");
+    return parseFloat(nilai) || 0;
+}
+
+function formatAngka(nilai){
+    if(!nilai || nilai=="")
+        return "0,00";
+    nilai = nilai.toString();
+    nilai =
+        nilai.replace(/\./g,"")
+             .replace(",", ".");
+    return parseFloat(nilai)
+        .toLocaleString(
+            "id-ID",
+            {
+                minimumFractionDigits:2,
+                maximumFractionDigits:2
+            }
+        );
+}
+
+function toMoney(nilai){
+    if(!nilai)
+        return 0;
+    nilai = nilai.toString().trim();
+    // hapus titik ribuan
+    nilai =
+        nilai.replace(/\./g, "");
+    // ubah koma jadi titik
+    nilai =
+        nilai.replace(",", ".");
+    return parseFloat(nilai) || 0;
+}
+
+
+function closeUnitDashboard(){
+    document.getElementById(
+        "unitDashboardModal"
+    ).style.display = "none";
+}
+
+async function downloadUnitDashboardPDF(){
+    const { jsPDF } = window.jspdf;
+    const dashboard =
+        document.querySelector(
+            ".unit-dashboard-content"
+        );
+    const btn =
+        dashboard.querySelector(
+        ".download-dashboard-btn"
+        );
+        btn.style.display = "none";
+    const closeBtn =
+        dashboard.querySelector(
+            ".close"
+        );
+        closeBtn.style.display = "none";
+    dashboard.style.height = "auto";
+    const canvas =
+        await html2canvas(dashboard, {
+            scale:2,
+            useCORS:true,
+            backgroundColor:"#ffffff",
+            windowWidth: dashboard.scrollWidth,
+            windowHeight: dashboard.scrollHeight
+        });
+    const imgData =
+        canvas.toDataURL("image/png");
+    const pdf =
+        new jsPDF({
+            orientation:"landscape",
+            unit:"mm",
+            format:"a4"
+        });
+    const pageWidth =
+        pdf.internal.pageSize.getWidth();
+    const pageHeight =
+        pdf.internal.pageSize.getHeight();
+    const margin = 5;
+    const availableWidth =
+        pageWidth - (margin * 2);
+    const availableHeight =
+        pageHeight - (margin * 2);
+    const ratio =
+        Math.min(
+            availableWidth / canvas.width,
+            availableHeight / canvas.height
+        );
+    const finalWidth =
+        canvas.width * ratio;
+    const finalHeight =
+        canvas.height * ratio;
+    const x =
+        (pageWidth - finalWidth) / 2;
+    const y =
+        (pageHeight - finalHeight) / 2;
+    pdf.addImage(
+        imgData,
+        "PNG",
+        x,
+        y,
+        finalWidth,
+        finalHeight
+    );
+    pdf.save("Dashboard_Unit.pdf");
+    dashboard.style.height = "96vh";
+    btn.style.display = "block";
+    closeBtn.style.display = "block";
+}
+
+loadData();
+
+</script>
+
+<div id="unitDashboardModal" class="modal">
+    <div class="unit-dashboard-content">
+        <span class="close"
+            onclick="closeUnitDashboard()">
+            &times;
+        </span>
+        <button class="download-dashboard-btn"
+            onclick="downloadUnitDashboardPDF()">
+            DOWNLOAD PDF
+        </button>
+        <div class="unit-dashboard-grid">
+            <!-- EBITDA -->
+            <div class="chart-box">
+                <canvas id="chartEbitda"></canvas>
+            </div>
+            <!-- kanan -->
+            <div style="
+                display:grid;
+                grid-template-rows:48% 48%;
+                gap:10px;
+            ">
+                <!-- omzet -->
+                <div class="chart-box">
+                    <canvas id="chartOmzet"></canvas>
+                </div>
+                <!-- KPI -->
+                <div class="chart-box">
+                    <canvas id="chartKPI"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="pdfModal" class="modal">
+    <div class="modal-content">
+        <span class="close"
+              onclick="closePDF()">
+              &times;
+        </span>
+        <button id="downloadBtn"
+                class="download-btn">
+            Download PDF
+        </button>
+        <iframe id="pdfFrame"></iframe>
+    </div>
+</div>
+
+
+<div id="dashboardModal" class="modal">
+    <div class="dashboard-content">
+        <span class="close"
+            onclick="closeDashboard()">
+            &times;
+        </span>
+        <button class="download-dashboard-btn"
+                onclick="downloadDashboardRATPDF()">
+            DOWNLOAD PDF
+        </button>
+        <div id="pdfHeader" class="pdf-header">
+            <img src="logo.png"
+                class="pdf-logo">
+            <div class="pdf-title">
+                <div>
+                    PERKEMBANGAN RAPAT ANGGOTA TAHUNAN
+                </div>
+                <div>
+                    KOPERASI KONSUMEN KARYAWAN TJIWI KIMIA
+                </div>
+            </div>
+        </div>
+        <div id="dashboardCharts"
+            class="dashboard-rat-grid">
+        </div>
+    </div>
+</div>
+</body>
+</html>
