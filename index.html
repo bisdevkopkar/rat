@@ -450,6 +450,15 @@ canvas{
     }
 }
 
+.page-wrapper{
+    width:max-content;
+    min-width:100%;
+}
+
+.table-container{
+    overflow-x:auto;
+}
+
 
 </style>
 
@@ -464,114 +473,115 @@ canvas{
 
 <body>
 
-<div class="header">
-    RAPAT ANGGOTA TAHUNAN
-</div>
+<div class="page-wrapper">
 
-<div class="toolbar">
-    <button onclick="openDashboard()">
-        DASHBOARD
-    </button>
-    <label>
-        <input type="checkbox"
-               value="all"
-               checked
-               onchange="toggleGrafik(this)">
-        Kinerja
-    </label>
-    <label>
-        <input type="checkbox"
+    <div class="header">
+        RAPAT ANGGOTA TAHUNAN
+    </div>
+
+    <div class="toolbar">
+        <button onclick="openDashboard()">
+            DASHBOARD
+        </button>
+        <label>
+            <input type="checkbox"
+                value="all"
+                checked
+                onchange="toggleGrafik(this)">
+            Kinerja
+        </label>
+        <label>
+            <input type="checkbox"
                value="anggota"
                onchange="toggleGrafik(this)">
-        Anggota
-    </label>
-    <label>
-        <input type="checkbox"
+            Anggota
+        </label>
+        <label>
+            <input type="checkbox"
                value="aset"
                onchange="toggleGrafik(this)">
-        Asset
-    </label>
-    <label>
-        <input type="checkbox"
+            Asset
+        </label>
+        <label>
+            <input type="checkbox"
                value="omzet"
                onchange="toggleGrafik(this)">
-        Omzet
-    </label>
-    <label>
-        <input type="checkbox"
+            Omzet
+        </label>
+        <label>
+            <input type="checkbox"
                value="ebitda"
                onchange="toggleGrafik(this)">
-        EBITDA
-    </label>
-    <label>
-        <input type="checkbox"
+            EBITDA
+        </label>
+        <label>
+            <input type="checkbox"
                value="shu"
                onchange="toggleGrafik(this)">
-        SHU
-    </label>
-    <label>
-        <input type="checkbox"
+            SHU
+        </label>
+        <label>
+            <input type="checkbox"
                value="capital"
                onchange="toggleGrafik(this)">
-        Modal
-    </label>
-    <label>
-        <input type="checkbox"
+            Modal
+        </label>
+        <label>
+            <input type="checkbox"
                value="neraca"
                onchange="toggleGrafik(this)">
-        Neraca
-    </label>
-</div>
-
-<div id="loading" class="loading">
-    <div class="spinner"></div>
-    <div class="loading-text">
-        Loading Data Laporan Rapat Anggota Tahunan...
+            Neraca
+        </label>
     </div>
-</div>
 
-<table>
+    <div id="loading" class="loading">
+        <div class="spinner"></div>
+            <div class="loading-text">
+            Loading Data Laporan Rapat Anggota Tahunan...
+        </div>
+    </div>
 
-<thead>
-<tr>
-    <th class="center">
-        Tahun Buku
-    </th>
-    <th class="center">
-        Tanggal RAT
-    </th>
-    <th class="center">
-        Jumlah Anggota
-    </th>
-    <th class="center">
-        Nilai Asset
-    </th>
-    <th class="center">
-        Total Omzet
-    </th>
-    <th class="center">
-        Pencapaian Ebitda
-    </th>
-    <th class="center">
-        Perolehan SHU
-    </th>
-    <th class="center">
-        Modal Akhir
-    </th>
-    <th class="center">
-        Nilai Neraca
-    </th>
-    <th>
-        Buku RAT
-    </th>
-</tr>
-</thead>
+    <table>
 
-<tbody id="listData"></tbody>
+    <thead>
+    <tr>
+        <th class="center">
+            Tahun Buku
+        </th>
+        <th class="center">
+            Tanggal RAT
+        </th>
+        <th class="center">
+            Jumlah Anggota
+        </th>
+        <th class="center">
+            Nilai Asset
+        </th>
+        <th class="center">
+            Total Omzet
+        </th>
+        <th class="center">
+            Pencapaian Ebitda
+        </th>
+        <th class="center">
+            Perolehan SHU
+        </th>
+        <th class="center">
+            Modal Akhir
+        </th>
+        <th class="center">
+            Nilai Neraca
+        </th>
+        <th>
+            Buku RAT
+        </th>
+    </tr>
+    </thead>
 
-</table>
+    <tbody id="listData"></tbody>
 
-</div>
+    </table>
+
 </div>
 
 <script>
